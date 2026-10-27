@@ -50,6 +50,10 @@ Some website builders limit script tags to higher plans. Where scripts aren't al
 
 Upload the whole `dist/` folder to any static host (GitHub Pages, Netlify, Cloudflare Pages, a plain web server). The setup page builds the snippet's script address from where it is served, so the snippet points at the `clayculator.js` beside it. Open the hosted setup page, not a file on your computer, when copying code for a live site.
 
+### GitHub Pages
+
+`.github/workflows/pages.yml` builds and publishes `dist/` on every push to `main`. One-time setup: in the repository, go to **Settings → Pages** and set **Source** to **GitHub Actions**. The setup page is then served at `https://<owner>.github.io/<repo>/`, with `clayculator.js` beside it. GitHub Pages on a private repository requires a paid GitHub plan, and the published site is public.
+
 ## Development
 
 ```
