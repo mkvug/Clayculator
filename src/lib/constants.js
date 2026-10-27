@@ -11,10 +11,4 @@ export const SHAPES = {
   Cylinder: [[180,278],[222,278],[233,262],[234,190],[234,70],[230,58]],
 };
 
-export const SHRINKAGE_PRESETS = [
-  { name: "Earthenware", pct: 6 },
-  { name: "Stoneware", pct: 12 },
-  { name: "Porcelain", pct: 15 },
-];
-
 export const UNITS = ["in", "cm"];

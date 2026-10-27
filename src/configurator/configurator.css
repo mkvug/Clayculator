@@ -1,0 +1,71 @@
+/* Setup page chrome only. The calculator itself is styled by ../calculator.css inside its own shadow root. */
+:root {
+  --bg: #f6f6f6;
+  --card: #ffffff;
+  --fg: #111111;
+  --muted: #666666;
+  --line: #d9d9d9;
+  --accent: #111111;
+  --accent-fg: #ffffff;
+  --warn: #9a3412;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a0a0a; --card: #000000; --fg: #f2f2f2; --muted: #999999; --line: #333333;
+    --accent: #f2f2f2; --accent-fg: #000000; --warn: #fdba74; color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 var(--font);
+  padding-block: 24px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.cfg { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+h1 { font-size: 1.75rem; line-height: 1.15; margin: 0; }
+h2 { font-size: 1.1rem; margin: 0; }
+.lede { margin: 6px 0 0; color: var(--muted); max-width: 60ch; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.col { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.preview-col { position: sticky; top: 16px; }
+@media (max-width: 860px) { .layout { grid-template-columns: minmax(0, 1fr); } .preview-col { position: static; } }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 4px; padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+label { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+label.check { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--fg); font-weight: 400; }
+input[type="text"], input[type="number"], select, textarea {
+  width: 100%; font: inherit; color: var(--fg); background: var(--card);
+  border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px;
+}
+input[type="color"] { width: 44px; height: 36px; padding: 2px; border: 1px solid var(--line); border-radius: 4px; background: var(--card); }
+textarea.code { font: 0.8rem/1.5 var(--mono); resize: vertical; }
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+.row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.hint { margin: 0; color: var(--muted); font-size: 0.875rem; }
+.warn { margin: 0; color: var(--warn); font-size: 0.875rem; }
+.btn, .clay-actions button {
+  font: 500 0.875rem var(--font); color: var(--fg); background: transparent;
+  border: 1px solid var(--line); border-radius: 4px; padding: 7px 12px; cursor: pointer;
+}
+.btn:hover:not(:disabled), .clay-actions button:hover:not(:disabled) { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+button:disabled { opacity: 0.4; cursor: default; }
+.clay-list { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.clay-row { width: 100%; border: 1px solid var(--line); border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.clay-row.bad { border-color: var(--warn); }
+.clay-main { display: flex; gap: 10px; }
+.clay-main .grow { flex: 1; }
+.clay-main .pct { width: 110px; flex: none; }
+.clay-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.clay-actions .spacer { flex: 1; }
+.preview-host { display: block; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.steps { margin: 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 4px; }
+details { border-top: 1px solid var(--line); padding-top: 12px; }
+summary { cursor: pointer; font-weight: 500; margin-bottom: 10px; }

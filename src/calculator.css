@@ -1,5 +1,7 @@
-/* Layout: one narrow column. Shrinkage, then a half-profile drawing pad, then final size, then thrown-size results with a measurement table. */
-:root {
+/* Scoped to .cc so the calculator can sit inside any page. When embedded it renders inside a shadow root. */
+:host { display: block; }
+.cc, .cc * { box-sizing: border-box; }
+.cc {
   --bg: #ffffff;
   --surface: #ffffff;
   --fg: #111111;
@@ -12,26 +14,21 @@
   --font-display: inherit;
   --font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.5;
+  padding: 16px;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #000000; --surface: #000000; --fg: #f2f2f2; --muted: #999999;
-    --line: #333333; --accent: #f2f2f2; --accent-fg: #000000; --thrown: #999999; --grid: #161616;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
+.cc[data-theme="dark"] {
   --bg: #000000; --surface: #000000; --fg: #f2f2f2; --muted: #999999;
   --line: #333333; --accent: #f2f2f2; --accent-fg: #000000; --thrown: #999999; --grid: #161616;
   color-scheme: dark;
 }
-* { box-sizing: border-box; }
-body {
-  background: var(--bg); color: var(--fg);
-  font-family: var(--font-body); font-size: 16px; line-height: 1.5;
-  padding-block: 24px;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
+@media (prefers-color-scheme: dark) {
+  .cc[data-theme="auto"] {
+    --bg: #000000; --surface: #000000; --fg: #f2f2f2; --muted: #999999;
+    --line: #333333; --accent: #f2f2f2; --accent-fg: #000000; --thrown: #999999; --grid: #161616;
+    color-scheme: dark;
+  }
 }
 .wrap { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
 h1 { font-family: var(--font-display); font-weight: 600; font-size: 1.75rem; line-height: 1.1; margin: 0; text-wrap: balance; }
@@ -75,3 +72,10 @@ td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--grid); 
 th:first-child, td:first-child { text-align: left; }
 tr.rim td { font-weight: 500; }
 @media (max-width: 420px) { .result .num { font-size: 1.9rem; } .panel { padding: 16px; } }
+
+select {
+  width: 100%; font: 500 1rem var(--font-body); color: var(--fg);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 12px;
+}
+select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.readout { font: 500 1.1rem var(--font-mono); font-variant-numeric: tabular-nums; margin: 0; }
