@@ -33,11 +33,10 @@ export default function ExportPanel({ config, onLoad }) {
   return (
     <section className="card" aria-label="Export">
       <h2>Add it to your website</h2>
-      <ol className="steps">
-        <li>Copy the code below.</li>
-        <li>In your website editor, add an <strong>HTML</strong>, <strong>embed</strong> or <strong>code</strong> block where you want the calculator.</li>
-        <li>Paste the code and publish.</li>
-      </ol>
+      <p className="hint">
+        Copy the code, paste it into an <strong>HTML</strong>, <strong>embed</strong> or <strong>code</strong> block on your
+        website where you want the calculator, and publish.
+      </p>
       {local && (
         <p className="warn">
           This page is open from a file on your computer, so the script address below won't work on a live site.

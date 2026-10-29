@@ -30,8 +30,30 @@ export default function Configurator() {
       <header className="top">
         <h1>Clayculator setup</h1>
         <p className="lede">
-          Choose the clay bodies your studio offers, check the preview, then copy the code onto your website for your students.
+          Clay shrinks as it dries and again in the kiln, so a pot thrown at the size you want comes out smaller than
+          planned. Clayculator is a calculator for your studio's website that works backward. Your students sketch half
+          of the shape they want, choose a clay, and enter the finished size. It tells them the height and width to
+          throw at, plus a table of diameters to check as they work.
         </p>
+        <p className="lede">
+          You don't need to write any code. Add your studio's clays here, then paste one snippet into your website.
+        </p>
+        <details className="how">
+          <summary>How this works</summary>
+          <h2>How to set it up</h2>
+          <ol className="steps">
+            <li><strong>Add your clay bodies.</strong> Enter each clay's name and its total shrinkage, wet to fired. The examples are placeholders, so replace them with yours.</li>
+            <li><strong>Adjust the look.</strong> Change the heading, intro text, starting units, theme and button color. The preview updates as you go.</li>
+            <li><strong>Copy the code.</strong> Paste it into an HTML or embed block on your website and publish.</li>
+            <li><strong>Come back to edit.</strong> Your settings live inside the code you copied. To change them later, paste that code into "Edit an existing embed". Nothing is stored on a server, so keep a copy of the code somewhere safe.</li>
+          </ol>
+          <h2>Not sure of a clay's shrinkage?</h2>
+          <p>
+            Check your supplier's data sheet, or make a test tile. Scratch a 10 cm line into a wet slab, fire it with
+            your usual schedule, and measure the line afterwards. Shrinkage % = (10 − fired length) ÷ 10 × 100. For
+            example, a line that fires to 8.8 cm means 12% shrinkage.
+          </p>
+        </details>
       </header>
 
       <div className="layout">
