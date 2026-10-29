@@ -36,10 +36,20 @@ Some website builders limit script tags to higher plans. Where scripts aren't al
 | `clays` | `[{ id, name, shrinkage, note }]` | The studio's clay bodies. `shrinkage` is a percentage from 0 to 99. |
 | `defaultClay` | a clay `id` | Selected when the page loads. |
 | `allowCustom` | `true` / `false` | Show a "Custom shrinkage" option. Always on if there are no clays. |
+| `showVolume` | `true` / `false` | Advanced. Show how much the piece holds. Off by default. |
+| `volumeSizing` | `true` / `false` | Advanced. Add a "Volume" option to "Size by" so students can enter a target such as 12 fl oz. Off by default. |
+| `volumeUnit` | `"floz"` / `"cup"` / `"ml"` / `"l"` | Starting volume units. |
+| `wallMm`, `floorMm` | number (mm) | Default fired wall and floor thickness used for volume. Students can change them. |
 | `unit` | `"in"` / `"cm"` | Starting units. |
 | `theme` | `"light"` / `"dark"` / `"auto"` | `auto` follows the visitor's device. |
 | `accent` | `"#rrggbb"` or `""` | Button and outline color. |
 | `heading`, `intro` | text | Shown above the calculator. Empty hides them. |
+
+## Volume (advanced)
+
+When enabled, the calculator estimates how much the finished piece holds, and can work the other way: a student enters a target volume and the drawn shape is scaled until it holds that.
+
+The student draws the outside of the pot, so the inside is found by moving that outline inward by the wall thickness (and by the floor thickness where the surface faces up). Capacity is the volume of that inside shape up to the rim, in `src/lib/volume.js`. For a target volume the shape is scaled uniformly while walls and floor keep their real thickness, so doubling the size does not exactly double the volume. The result is an estimate from a sketch.
 
 ## Hosting it
 
@@ -61,6 +71,7 @@ npm install
 npm run dev      # setup page with hot reload (the embed script isn't served in dev)
 npm run build    # setup page + embed script into dist/
 npm run preview  # serve dist/ locally to try the full flow
+npm test         # unit tests for the volume math
 ```
 
 ```

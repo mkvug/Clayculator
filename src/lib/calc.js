@@ -17,10 +17,12 @@ export function buildProfile(pts, smooth, sizeBy) {
   return { prof, Hraw, Wraw, ref };
 }
 
-// Scale the profile to the requested final size and work out the thrown dimensions and table rows.
-export function computeThrow(profile, pct, size) {
+// Scale (final units per pad unit) that gives the profile a requested height or widest diameter.
+export const scaleForSize = (profile, size) => size / profile.ref;
+
+// Work out the thrown dimensions and table rows for a profile drawn at scale `s` (pad units -> final units).
+export function computeThrow(profile, pct, s) {
   const m = throwMultiplier(pct);
-  const s = size / profile.ref;                      // pad units -> final units
   const Hf = profile.Hraw * s, Wf = profile.Wraw * s;
   const fired = profile.prof.map(([r, h]) => [r * s, h * s]);
   const Ht = Hf * m;
@@ -35,5 +37,5 @@ export function computeThrow(profile, pct, size) {
     return { height: hT, diameter: r === null ? null : 2 * r * m, rim: i === heights.length - 1 };
   });
 
-  return { m, Hf, Wf, Ht, Wt: Wf * m, rows, prof: profile.prof };
+  return { m, Hf, Wf, Ht, Wt: Wf * m, rows, prof: profile.prof, fired };
 }

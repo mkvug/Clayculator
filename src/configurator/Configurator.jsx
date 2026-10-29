@@ -3,6 +3,9 @@ import ClayList from "./ClayList.jsx";
 import ExportPanel from "./ExportPanel.jsx";
 import PreviewHost from "./PreviewHost.jsx";
 import { DEFAULT_CONFIG, normalizeConfig } from "../config.js";
+import { MM_PER } from "../lib/constants.js";
+import { round } from "../lib/geometry.js";
+import { VOLUME_UNITS } from "../lib/volume.js";
 
 const KEY = "clayculator-draft";
 
@@ -12,6 +15,30 @@ function loadDraft() {
     if (saved) return JSON.parse(saved);
   } catch { /* storage unavailable: start from the defaults */ }
   return DEFAULT_CONFIG;
+}
+
+// Thickness is stored in millimeters but edited in the studio's starting unit.
+function ThicknessField({ id, label, mm, unit, onChange }) {
+  const per = MM_PER[unit];
+  const show = (v) => String(round(v / per, 2));
+  const [text, setText] = useState(show(mm));
+
+  // Re-sync only when the stored value no longer matches what is typed (e.g. the unit changed).
+  useEffect(() => {
+    if (!(Math.abs(parseFloat(text) * per - mm) < 0.01)) setText(show(mm));
+  }, [mm, unit]);
+
+  return (
+    <div className="field">
+      <label htmlFor={id}>{label}</label>
+      <input id={id} type="number" min="0" step="0.05" value={text}
+        onChange={(e) => {
+          setText(e.target.value);
+          const n = parseFloat(e.target.value);
+          if (n > 0) onChange(round(n * per, 2));
+        }} />
+    </div>
+  );
 }
 
 // Studio setup page: edit clay bodies and options, preview the calculator, copy the embed code.
@@ -69,6 +96,42 @@ export default function Configurator() {
               <input type="checkbox" checked={raw.allowCustom !== false}
                 onChange={(e) => set({ allowCustom: e.target.checked })} /> Let students enter their own shrinkage
             </label>
+          </section>
+
+          <section className="card" aria-label="Volume tools">
+            <h2>Volume tools (advanced)</h2>
+            <p className="hint">
+              Optional. Beginners can use the standard calculator. Turn these on for advanced students and production
+              potters who aim for a volume, such as a 12 fl oz coffee mug.
+            </p>
+            <label className="check">
+              <input type="checkbox" checked={config.showVolume}
+                onChange={(e) => set({ showVolume: e.target.checked })} /> Show how much the piece holds
+            </label>
+            <label className="check">
+              <input type="checkbox" checked={config.volumeSizing}
+                onChange={(e) => set({ volumeSizing: e.target.checked })} /> Let students size by a target volume
+            </label>
+            {(config.showVolume || config.volumeSizing) && (
+              <>
+                <div className="field">
+                  <label htmlFor="volunit">Volume units</label>
+                  <select id="volunit" value={config.volumeUnit} onChange={(e) => set({ volumeUnit: e.target.value })}>
+                    {VOLUME_UNITS.map((u) => <option key={u.id} value={u.id}>{u.label}</option>)}
+                  </select>
+                </div>
+                <div className="grid">
+                  <ThicknessField id="wall" label={`Default wall thickness (${config.unit})`} mm={config.wallMm}
+                    unit={config.unit} onChange={(wallMm) => set({ wallMm })} />
+                  <ThicknessField id="floor" label={`Default floor thickness (${config.unit})`} mm={config.floorMm}
+                    unit={config.unit} onChange={(floorMm) => set({ floorMm })} />
+                </div>
+                <p className="hint">
+                  Finished thickness after firing. A typical mug has walls near 1/4 in (6 mm) and a floor near 3/8 in
+                  (9 mm). Students can change both. Volume is estimated from the drawn shape, so treat it as a close guide.
+                </p>
+              </>
+            )}
           </section>
 
           <section className="card" aria-label="Appearance">

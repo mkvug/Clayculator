@@ -10,6 +10,11 @@ export const DEFAULT_CONFIG = {
   theme: "auto",           // "light" | "dark" | "auto" (follows the visitor's device)
   accent: "",              // "#rrggbb", or "" for the theme default
   allowCustom: true,       // let students type their own shrinkage
+  showVolume: false,       // advanced: show how much the piece holds
+  volumeSizing: false,     // advanced: let students size by a target volume
+  volumeUnit: "floz",      // "floz" | "cup" | "ml" | "l"
+  wallMm: 6.35,            // default fired wall thickness, in millimeters
+  floorMm: 9.525,          // default fired floor thickness, in millimeters
   defaultClay: "stoneware",
   clays: [
     { id: "earthenware", name: "Earthenware", shrinkage: 6, note: "" },
@@ -40,6 +45,10 @@ export function normalizeConfig(raw) {
     .filter(Boolean);
 
   const accent = /^#[0-9a-f]{6}$/i.test(r.accent) ? r.accent : "";
+  const mm = (v, fallback, max) => {
+    const n = parseFloat(v);
+    return Number.isFinite(n) && n >= 1 ? Math.min(n, max) : fallback;
+  };
   return {
     heading: str(r.heading, DEFAULT_CONFIG.heading),
     intro: str(r.intro, DEFAULT_CONFIG.intro),
@@ -47,6 +56,11 @@ export function normalizeConfig(raw) {
     theme: oneOf(r.theme, ["light", "dark", "auto"], "auto"),
     accent,
     allowCustom: clays.length === 0 ? true : r.allowCustom !== false,
+    showVolume: r.showVolume === true,
+    volumeSizing: r.volumeSizing === true,
+    volumeUnit: oneOf(r.volumeUnit, ["floz", "cup", "ml", "l"], "floz"),
+    wallMm: mm(r.wallMm, DEFAULT_CONFIG.wallMm, 30),
+    floorMm: mm(r.floorMm, DEFAULT_CONFIG.floorMm, 40),
     defaultClay: clays.some((c) => c.id === r.defaultClay) ? r.defaultClay : clays[0] ? clays[0].id : CUSTOM,
     clays,
   };

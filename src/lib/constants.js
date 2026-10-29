@@ -12,3 +12,6 @@ export const SHAPES = {
 };
 
 export const UNITS = ["in", "cm"];
+
+// Millimeters per display length unit (for wall and floor thickness).
+export const MM_PER = { in: 25.4, cm: 10 };
