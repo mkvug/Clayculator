@@ -20,11 +20,12 @@ export function buildProfile(pts, smooth, sizeBy) {
 // Scale (final units per pad unit) that gives the profile a requested height or widest diameter.
 export const scaleForSize = (profile, size) => size / profile.ref;
 
-// Work out the thrown dimensions and table rows for a profile drawn at scale `s` (pad units -> final units).
-export function computeThrow(profile, pct, s) {
+// Work out the thrown dimensions and table rows for a profile drawn at scales sx (across) and sy (up),
+// both in final units per pad unit. Pass one scale to keep the sketch's proportions.
+export function computeThrow(profile, pct, sx, sy = sx) {
   const m = throwMultiplier(pct);
-  const Hf = profile.Hraw * s, Wf = profile.Wraw * s;
-  const fired = profile.prof.map(([r, h]) => [r * s, h * s]);
+  const Hf = profile.Hraw * sy, Wf = profile.Wraw * sx;
+  const fired = profile.prof.map(([r, h]) => [r * sx, h * sy]);
   const Ht = Hf * m;
 
   const step = niceStep(Ht);

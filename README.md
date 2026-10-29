@@ -51,6 +51,8 @@ When enabled, the calculator estimates how much the finished piece holds, and ca
 
 The student draws the outside of the pot, so the inside is found by moving that outline inward by the wall thickness (and by the floor thickness where the surface faces up). Capacity is the volume of that inside shape up to the rim, in `src/lib/volume.js`. For a target volume the shape is scaled uniformly while walls and floor keep their real thickness, so doubling the size does not exactly double the volume. The result is an estimate from a sketch.
 
+With volume sizing on, a student can also tick **Also match a volume** while sizing by height or widest diameter. That dimension is held exactly and the sketch is stretched the other way (wider or narrower for a set height, taller or shorter for a set width) until it holds the target. The page says how far the sketch was stretched, and warns when it is more than 25%.
+
 ## Hosting it
 
 `npm run build` produces `dist/`:

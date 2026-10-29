@@ -74,12 +74,9 @@ export function cavityVolume(outer, wall, floor, rows = 240) {
 
 export const capacityMl = (outer, wall, floor, unit, rows) => cavityVolume(outer, wall, floor, rows) * ML_PER_CUBIC[unit];
 
-// Find the scale (units per pad unit) at which a drawn [[r, h], ...] profile holds `targetMl`,
-// with walls and floor kept at a fixed real thickness. Returns null if it can't hold liquid.
-export function solveScale(prof, wall, floor, unit, targetMl) {
-  if (!(targetMl > 0) || !(wall > 0) || !(floor > 0)) return null;
-  const at = (s) => capacityMl(prof.map(([r, h]) => [r * s, h * s]), wall, floor, unit, 160);
-
+// Find the value in (0, inf) at which `at(v)` (a capacity in mL that grows with v) reaches `targetMl`.
+// Returns null if it never gets there (the shape can't hold liquid).
+function searchScale(at, targetMl) {
   let hi = 0.001;
   let tries = 0;
   while (at(hi) < targetMl) {
@@ -93,4 +90,27 @@ export function solveScale(prof, wall, floor, unit, targetMl) {
     else lo = mid;
   }
   return hi;
+}
+
+const validInputs = (wall, floor, targetMl) => targetMl > 0 && wall > 0 && floor > 0;
+
+// Scale (units per pad unit) at which a drawn [[r, h], ...] profile holds `targetMl`, with walls and
+// floor kept at a fixed real thickness. Same scale on both axes, so the sketch keeps its proportions.
+export function solveScale(prof, wall, floor, unit, targetMl) {
+  if (!validInputs(wall, floor, targetMl)) return null;
+  const at = (s) => capacityMl(prof.map(([r, h]) => [r * s, h * s]), wall, floor, unit, 160);
+  return searchScale(at, targetMl);
+}
+
+// Hold one dimension and stretch the other until the profile holds `targetMl`.
+// fixed = { axis: "h" | "w", scale }: the scale (units per pad unit) already set by the chosen height
+// ("h") or widest diameter ("w"). Returns the scale for the other axis (width for "h", height for "w").
+export function solveStretch(prof, fixed, wall, floor, unit, targetMl) {
+  if (!validInputs(wall, floor, targetMl) || !(fixed.scale > 0)) return null;
+  const at = (v) => {
+    const sx = fixed.axis === "h" ? v : fixed.scale;
+    const sy = fixed.axis === "h" ? fixed.scale : v;
+    return capacityMl(prof.map(([r, h]) => [r * sx, h * sy]), wall, floor, unit, 160);
+  };
+  return searchScale(at, targetMl);
 }

@@ -12,7 +12,8 @@ const KEY = "clayculator-draft";
 function loadDraft() {
   try {
     const saved = localStorage.getItem(KEY);
-    if (saved) return JSON.parse(saved);
+    // Merge over the defaults so drafts saved before newer settings existed still load.
+    if (saved) return { ...DEFAULT_CONFIG, ...JSON.parse(saved) };
   } catch { /* storage unavailable: start from the defaults */ }
   return DEFAULT_CONFIG;
 }
@@ -129,6 +130,8 @@ export default function Configurator() {
                 <p className="hint">
                   Finished thickness after firing. A typical mug has walls near 1/4 in (6 mm) and a floor near 3/8 in
                   (9 mm). Students can change both. Volume is estimated from the drawn shape, so treat it as a close guide.
+                  With volume sizing on, students can also tick "Also match a volume" to hold a height or width and
+                  stretch the shape to reach a volume.
                 </p>
               </>
             )}

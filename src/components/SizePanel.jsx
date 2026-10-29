@@ -6,11 +6,25 @@ import { VOLUME_UNITS, unitLabel } from "../lib/volume.js";
 
 const UNIT_OPTIONS = UNITS.map((u) => ({ value: u, label: u }));
 
+// How the sketch was stretched to hit a volume at a fixed height or width, or null.
+function stretchNote(stretch) {
+  if (!stretch) return null;
+  const pct = Math.round(Math.abs(stretch.ratio - 1) * 100);
+  if (pct < 1) return null;
+  const grows = stretch.ratio >= 1;
+  const word = stretch.axis === "h" ? (grows ? "wider" : "narrower") : grows ? "taller" : "shorter";
+  return { pct, word, big: pct > 25 };
+}
+
 // `volume` is null unless the studio turned on an advanced volume feature:
-// { sizing, unit, onUnitChange, wall, floor, onWallChange, onFloorChange }
+// { sizing, unit, onUnitChange, wall, floor, onWallChange, onFloorChange,
+//   match, onMatchChange, target, onTargetChange, stretch }
 export default function SizePanel({ unit, onUnitChange, sizeBy, onSizeByChange, size, onSizeChange, result, volume }) {
   const digits = unit === "in" ? 2 : 1;
   const byVolume = sizeBy === "v";
+  const canMatch = volume && volume.sizing && !byVolume;
+  const matching = canMatch && volume.match;
+  const stretch = matching ? stretchNote(volume.stretch) : null;
 
   const sizeOptions = [
     { value: "h", label: "Height" },
@@ -30,7 +44,17 @@ export default function SizePanel({ unit, onUnitChange, sizeBy, onSizeByChange, 
       <Segmented label="Size by" options={sizeOptions} value={sizeBy} onChange={onSizeByChange} />
       <NumberField id="size" label={fieldLabel} suffix={suffix} value={size} onChange={onSizeChange}
         min="0" step="0.1" />
-      {byVolume && (
+      {canMatch && (
+        <label className="check">
+          <input type="checkbox" checked={volume.match} onChange={(e) => volume.onMatchChange(e.target.checked)} />
+          Also match a volume
+        </label>
+      )}
+      {matching && (
+        <NumberField id="target" label="Target volume" suffix={unitLabel(volume.unit)} value={volume.target}
+          onChange={volume.onTargetChange} min="0" step="0.1" />
+      )}
+      {(byVolume || matching) && (
         <div className="field">
           <label htmlFor="volunit">Volume units</label>
           <select id="volunit" value={volume.unit} onChange={(e) => volume.onUnitChange(e.target.value)}>
@@ -41,6 +65,12 @@ export default function SizePanel({ unit, onUnitChange, sizeBy, onSizeByChange, 
       {result && (
         <p className="note">
           Drawn shape: {round(result.Hf, digits)} {unit} tall × {round(result.Wf, digits)} {unit} wide when fired.
+        </p>
+      )}
+      {stretch && (
+        <p className={"note" + (stretch.big ? " strong" : "")}>
+          Your sketch is stretched {stretch.pct}% {stretch.word} to match the volume.
+          {stretch.big && " Redrawing it closer to what you want gives a more natural shape."}
         </p>
       )}
       {volume && (

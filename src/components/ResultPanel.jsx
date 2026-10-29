@@ -36,7 +36,7 @@ export default function ResultPanel({ result, error, pct, unit, volume }) {
               </p>
             </>
           )}
-          <Preview prof={result.prof} m={result.m} />
+          <Preview prof={result.fired} m={result.m} />
           <span className="label">Measure while throwing</span>
           <MeasureTable rows={result.rows} unit={unit} />
           <p className="note">
