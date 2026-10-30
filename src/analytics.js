@@ -33,14 +33,23 @@ function load() {
   if (loaded || !analyticsAvailable()) return;
   loaded = true;
   window["ga-disable-" + GA_ID] = false;
+
+  // Google's standard tag, added only after consent: the same two scripts in the same order as the
+  // snippet Google gives out. The inline script defines gtag() and queues the first commands.
+  const lib = document.createElement("script");
+  lib.async = true;
+  lib.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
+
+  const init = document.createElement("script");
+  init.textContent = `
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function gtag() { window.dataLayer.push(arguments); };
-  window.gtag("js", new Date());
-  window.gtag("config", GA_ID);
-  const tag = document.createElement("script");
-  tag.async = true;
-  tag.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
-  document.head.appendChild(tag);
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '${GA_ID}');
+`;
+
+  document.head.append(lib, init);
 }
 
 // Stop sending hits and remove the cookies Google set on this site.

@@ -68,7 +68,7 @@ Upload the whole `dist/` folder to any static host (GitHub Pages, Netlify, Cloud
 
 ### Analytics and cookies
 
-The setup page (not the embeddable calculator) can use Google Analytics. It is off on localhost, `npm run dev`, `npm run preview` and `file://` pages, and on the deployed site it loads only after the visitor clicks **Accept** in the cookie notice. **Decline** loads nothing. The choice is remembered in the browser and can be changed from **Cookie settings** at the bottom of the page. The measurement ID is `GA_ID` in `src/analytics.js`.
+The setup page (not the embeddable calculator) can use Google Analytics. It is off on localhost, `npm run dev`, `npm run preview` and `file://` pages, and on the deployed site it loads only after the visitor clicks **Accept** in the cookie notice, at which point Google's standard tag (the `gtag.js` script plus the inline `gtag('config', ...)` script) is added to the page. **Decline** loads nothing. The choice is remembered in the browser and can be changed from **Cookie settings** at the bottom of the page. The measurement ID is `GA_ID` in `src/analytics.js`.
 
 ## Development
 
