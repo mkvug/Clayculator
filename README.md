@@ -66,6 +66,10 @@ Upload the whole `dist/` folder to any static host (GitHub Pages, Netlify, Cloud
 
 `.github/workflows/pages.yml` builds and publishes `dist/` on every push to `main`. One-time setup: in the repository, go to **Settings → Pages** and set **Source** to **GitHub Actions**. The setup page is then served at `https://<owner>.github.io/<repo>/`, with `clayculator.js` beside it. GitHub Pages on a private repository requires a paid GitHub plan, and the published site is public.
 
+### Analytics and cookies
+
+The setup page (not the embeddable calculator) can use Google Analytics. It is off on localhost, `npm run dev`, `npm run preview` and `file://` pages, and on the deployed site it loads only after the visitor clicks **Accept** in the cookie notice. **Decline** loads nothing. The choice is remembered in the browser and can be changed from **Cookie settings** at the bottom of the page. The measurement ID is `GA_ID` in `src/analytics.js`.
+
 ## Development
 
 ```

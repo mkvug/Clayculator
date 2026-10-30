@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import ClayList from "./ClayList.jsx";
 import ExportPanel from "./ExportPanel.jsx";
 import PreviewHost from "./PreviewHost.jsx";
+import ConsentBanner from "./ConsentBanner.jsx";
+import { analyticsAvailable, getConsent } from "../analytics.js";
 import { DEFAULT_CONFIG, normalizeConfig } from "../config.js";
 import { MM_PER } from "../lib/constants.js";
 import { round } from "../lib/geometry.js";
@@ -45,6 +47,10 @@ function ThicknessField({ id, label, mm, unit, onChange }) {
 // Studio setup page: edit clay bodies and options, preview the calculator, copy the embed code.
 export default function Configurator() {
   const [raw, setRaw] = useState(loadDraft);
+  const [consent, setConsentState] = useState(getConsent);
+  const [askConsent, setAskConsent] = useState(false);
+  const tracking = analyticsAvailable();
+  const banner = tracking && (consent === null || askConsent);
   const set = (patch) => setRaw((r) => ({ ...r, ...patch }));
 
   useEffect(() => {
@@ -54,7 +60,7 @@ export default function Configurator() {
   const config = useMemo(() => normalizeConfig(raw), [raw]);
 
   return (
-    <div className="cfg">
+    <div className={"cfg" + (banner ? " has-consent" : "")}>
       <header className="top">
         <h1>Clayculator setup</h1>
         <p className="lede">
@@ -187,6 +193,15 @@ export default function Configurator() {
       </div>
 
       <ExportPanel config={config} onLoad={setRaw} />
+
+      {tracking && (
+        <footer className="foot">
+          <button type="button" className="linklike" onClick={() => setAskConsent(true)}>Cookie settings</button>
+        </footer>
+      )}
+      {banner && (
+        <ConsentBanner onChoose={(value) => { setConsentState(value); setAskConsent(false); }} />
+      )}
     </div>
   );
 }
